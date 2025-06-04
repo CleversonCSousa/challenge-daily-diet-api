@@ -1,7 +1,7 @@
 import fastify from 'fastify';
-import { userRoutes } from './http/userRoutes';
+import { usersRoutes } from './http/usersRoutes';
 export const app = fastify();
 
-app.register(userRoutes, {
-  prefix: 'users',
+app.register(usersRoutes, {
+  prefix: '/users',
 });

@@ -2,8 +2,13 @@ import { prismaClient } from '@/lib/prisma/prismaClient';
 import { hash } from 'bcryptjs';
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
+import { sign } from 'jsonwebtoken';
+import fastifyCookie from '@fastify/cookie';
+import { env } from '@/env';
 
-export async function userRoutes(app: FastifyInstance) {
+export async function usersRoutes(app: FastifyInstance) {
+  app.register(fastifyCookie);
+  
   app.post('/', async (request, reply) => {
     const registerBodySchema = z.object({
       name: z.string(),
@@ -24,7 +29,8 @@ export async function userRoutes(app: FastifyInstance) {
         return reply.status(409).send();
     }
 
-    prismaClient.user.create({
+
+    const { id } = await prismaClient.user.create({
         data: {
             name,
             email,
@@ -32,6 +38,15 @@ export async function userRoutes(app: FastifyInstance) {
         }
     });
 
-    return reply.status(201).send();
+    const token = sign({
+      name,
+      email,
+      id
+    }, env.JWT_SECRET);
+
+    return reply.cookie('token', token, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    }).status(201).send();
   });
 }
