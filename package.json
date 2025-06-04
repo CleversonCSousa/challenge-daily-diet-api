@@ -1,0 +1,35 @@
+{
+  "name": "desafio-daily-diet-app",
+  "version": "1.0.0",
+  "description": "Resolução de um desafio proposto na formação de Node.js da Rocketseat.",
+  "main": "index.js",
+  "dependencies": {
+    "@prisma/client": "6.9.0",
+    "dotenv": "16.5.0",
+    "fastify": "^5.3.3",
+    "zod": "3.25.49"
+  },
+  "devDependencies": {
+    "prisma": "6.9.0",
+    "tsup": "8.5.0",
+    "tsx": "4.19.4",
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.33.0",
+    "@types/node": "22.15.29",
+    "eslint": "8.57.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CleversonCSousa/desafio-daily-diet-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CleversonCSousa/desafio-daily-diet-api/issues"
+  },
+  "homepage": "https://github.com/CleversonCSousa/desafio-daily-diet-api#readme"
+}
