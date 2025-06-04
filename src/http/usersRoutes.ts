@@ -3,11 +3,9 @@ import { hash } from 'bcryptjs';
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { sign } from 'jsonwebtoken';
-import fastifyCookie from '@fastify/cookie';
 import { env } from '@/env';
 
 export async function usersRoutes(app: FastifyInstance) {
-  app.register(fastifyCookie);
   
   app.post('/', async (request, reply) => {
     const registerBodySchema = z.object({
