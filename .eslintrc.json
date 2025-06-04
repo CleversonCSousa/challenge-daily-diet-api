@@ -22,7 +22,7 @@
           "vars": "all"
         }
       ],
-      
+      "keyword-spacing": "error",
       "semi": ["error", "always"],
       "quotes": ["error", "single"]
     }
