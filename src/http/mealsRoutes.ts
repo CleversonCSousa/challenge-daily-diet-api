@@ -20,9 +20,6 @@ export async function mealsRoutes(app: FastifyInstance) {
           message: 'Time must be in HH:mm format'
       })
     });
-    
-    const { id } = request.user;
-
 
     const { name, description, is_within_diet, date, time } = mealBodySchema.parse(request.body);
 
@@ -33,7 +30,7 @@ export async function mealsRoutes(app: FastifyInstance) {
             is_within_diet,
             date,
             time,
-            user_id: id
+            user_id: request.user.id
         }
     });
 
@@ -55,13 +52,11 @@ export async function mealsRoutes(app: FastifyInstance) {
       meal_id: z.string().uuid()
     });
 
-    const { id } = request.user;
-
     const { name, description, is_within_diet, date, time, meal_id } = mealBodySchema.parse(request.body);
     
     await prismaClient.meal.update({
       where: {
-        user_id: id,
+        user_id: request.user.id,
         id: meal_id
       },
       data: {
@@ -85,14 +80,12 @@ export async function mealsRoutes(app: FastifyInstance) {
       meal_id: z.string().uuid()
     });
 
-    console.log(request.user);
-    const { id } = request.user;
     const { meal_id } = mealBodySchema.parse(request.body);
 
     await prismaClient.meal.delete({
       where: {
         id: meal_id,
-        user_id: id
+        user_id: request.user.id
       }
     });
 
@@ -103,12 +96,10 @@ export async function mealsRoutes(app: FastifyInstance) {
   app.get('/', {
     preHandler: [checkIsAuthenticated]
   },async (request, reply) => {
-    
-    const { id } = request.user;
 
     const meals = await prismaClient.meal.findMany({
       where: {
-        user_id: id
+        user_id: request.user.id
       },
       select: {
         id: true,
@@ -122,6 +113,39 @@ export async function mealsRoutes(app: FastifyInstance) {
 
     return reply.status(200).send({
       meals
+    });
+
+  });
+
+  app.get<{
+    Params: {
+      mealId: string,
+    }
+  }>('/:mealId', {
+    preHandler: [checkIsAuthenticated]
+  },async (request, reply) => {
+
+    const meal = await prismaClient.meal.findUnique({
+      where: {
+        user_id: request.user.id,
+        id: request.params.mealId
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        date: true,
+        time: true,
+        is_within_diet: true
+      }
+    });
+
+    if (!meal) {
+      return reply.status(404).send();
+    }
+
+    return reply.status(200).send({
+      meal
     });
 
   });
