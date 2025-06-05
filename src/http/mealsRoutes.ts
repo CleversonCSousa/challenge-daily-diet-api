@@ -77,4 +77,27 @@ export async function mealsRoutes(app: FastifyInstance) {
     return reply.status(201).send();
 
   });
+
+  app.delete('/', {
+    preHandler: [checkIsAuthenticated]
+  } ,async (request, reply) => {
+
+    const mealBodySchema = z.object({
+      meal_id: z.string().uuid()
+    });
+
+    console.log(request.user);
+    const { id } = request.user;
+    const { meal_id } = mealBodySchema.parse(request.body);
+
+    await prismaClient.meal.delete({
+      where: {
+        id: meal_id,
+        user_id: id
+      }
+    });
+
+    return reply.status(200).send();
+
+  });
 }
