@@ -149,4 +149,49 @@ export async function mealsRoutes(app: FastifyInstance) {
     });
 
   });
+
+  app.get('/metrics', {
+    preHandler: [checkIsAuthenticated]
+  },  async(request, reply) => {
+    const [meals, totalMeals, mealsWithinDiet, mealsOutsideDiet] = await Promise.all([
+      prismaClient.meal.findMany({
+        where: { user_id: request.user.id },
+        orderBy: [{ date: 'asc' }, { time: 'asc' }],
+      }),
+      prismaClient.meal.count({ where: { user_id: request.user.id } }),
+      prismaClient.meal.count({ where: { user_id: request.user.id, is_within_diet: true } }),
+      prismaClient.meal.count({ where: { user_id: request.user.id, is_within_diet: false } }),
+    ]);
+
+    /**
+     * Calcula a melhor sequência (streak) de refeições dentro da dieta.
+     * 
+     * ATENÇÃO: Esta função não é performática para grandes volumes de dados,
+     * pois carrega todos os registros na memória e itera sobre eles.
+     * Para grandes volumes de dados, recomenda-se implementar a lógica no banco de dados.
+     * 
+     * @author cleversonsousa
+    */
+    
+    const { bestStreak } = meals.reduce(
+      (acc, meal) => {
+        if (meal.is_within_diet) {
+          acc.currentStreak += 1;
+          acc.bestStreak = Math.max(acc.bestStreak, acc.currentStreak);
+        } else {
+          acc.currentStreak = 0;
+        }
+        return acc;
+      },
+      { currentStreak: 0, bestStreak: 0 }
+    );
+
+    reply.status(200).send({
+      totalMeals,
+      mealsOutsideDiet,
+      mealsWithinDiet,
+      bestStreak
+    });
+
+  });
 }
