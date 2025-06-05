@@ -7,7 +7,6 @@ import { prismaClient } from '@/lib/prisma/prismaClient';
 export async function mealsRoutes(app: FastifyInstance) {
   const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
   
-  
   app.post('/', {
     preHandler: [checkIsAuthenticated]
   }, async (request, reply) => {
@@ -98,6 +97,32 @@ export async function mealsRoutes(app: FastifyInstance) {
     });
 
     return reply.status(200).send();
+
+  });
+
+  app.get('/', {
+    preHandler: [checkIsAuthenticated]
+  },async (request, reply) => {
+    
+    const { id } = request.user;
+
+    const meals = await prismaClient.meal.findMany({
+      where: {
+        user_id: id
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        date: true,
+        time: true,
+        is_within_diet: true
+      }
+    });
+
+    return reply.status(200).send({
+      meals
+    });
 
   });
 }
