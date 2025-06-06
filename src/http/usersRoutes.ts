@@ -10,8 +10,12 @@ export async function usersRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
     const registerBodySchema = z.object({
       name: z.string(),
-      email: z.string().email(),
-      password: z.string().min(6),
+      email: z.string().email({
+        message: 'Email is invalid'
+      }),
+      password: z.string().min(6, {
+        message: 'Password must be at least 6 characters long'
+      }),
     });
 
     const { name, email, password } = registerBodySchema.parse(request.body);

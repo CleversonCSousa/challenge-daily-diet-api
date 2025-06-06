@@ -17,7 +17,7 @@ export async function mealsRoutes(app: FastifyInstance) {
       is_within_diet: z.boolean(),
       date: z.coerce.date(),
       time: z.string().regex(timeRegex, {
-          message: 'Time must be in HH:mm format'
+          message: 'Time invalid format',
       })
     });
 
@@ -47,7 +47,7 @@ export async function mealsRoutes(app: FastifyInstance) {
       is_within_diet: z.boolean(),
       date: z.coerce.date(),
       time: z.string().regex(timeRegex, {
-          message: 'Time must be in HH:mm format'
+          message: 'Time invalid format'
       }),
       meal_id: z.string().uuid()
     });
