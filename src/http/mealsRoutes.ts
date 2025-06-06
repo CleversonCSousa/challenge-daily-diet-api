@@ -1,14 +1,14 @@
 
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { checkIsAuthenticated } from './middlewares/check-is-authenticated';
+import { checkUserIsAuthenticated } from './middlewares/check-is-authenticated';
 import { prismaClient } from '@/lib/prisma/prismaClient';
 
 export async function mealsRoutes(app: FastifyInstance) {
   const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
   
   app.post('/', {
-    preHandler: [checkIsAuthenticated]
+    preHandler: [checkUserIsAuthenticated]
   }, async (request, reply) => {
 
     const mealBodySchema = z.object({
@@ -39,7 +39,7 @@ export async function mealsRoutes(app: FastifyInstance) {
   });
 
   app.put('/', {
-    preHandler: [checkIsAuthenticated]
+    preHandler: [checkUserIsAuthenticated]
   }, async (request, reply) => {
     const mealBodySchema = z.object({
       name: z.string(),
@@ -73,7 +73,7 @@ export async function mealsRoutes(app: FastifyInstance) {
   });
 
   app.delete('/', {
-    preHandler: [checkIsAuthenticated]
+    preHandler: [checkUserIsAuthenticated]
   } ,async (request, reply) => {
 
     const mealBodySchema = z.object({
@@ -94,7 +94,7 @@ export async function mealsRoutes(app: FastifyInstance) {
   });
 
   app.get('/', {
-    preHandler: [checkIsAuthenticated]
+    preHandler: [checkUserIsAuthenticated]
   },async (request, reply) => {
 
     const meals = await prismaClient.meal.findMany({
@@ -122,7 +122,7 @@ export async function mealsRoutes(app: FastifyInstance) {
       mealId: string,
     }
   }>('/:mealId', {
-    preHandler: [checkIsAuthenticated]
+    preHandler: [checkUserIsAuthenticated]
   },async (request, reply) => {
 
     const meal = await prismaClient.meal.findUnique({
@@ -151,7 +151,7 @@ export async function mealsRoutes(app: FastifyInstance) {
   });
 
   app.get('/metrics', {
-    preHandler: [checkIsAuthenticated]
+    preHandler: [checkUserIsAuthenticated]
   },  async(request, reply) => {
     const [meals, totalMeals, mealsWithinDiet, mealsOutsideDiet] = await Promise.all([
       prismaClient.meal.findMany({

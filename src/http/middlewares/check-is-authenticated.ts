@@ -2,7 +2,7 @@ import { env } from '@/env';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { JwtPayload, verify } from 'jsonwebtoken';
 
-export async function checkIsAuthenticated(request: FastifyRequest, reply: FastifyReply) {
+export async function checkUserIsAuthenticated(request: FastifyRequest, reply: FastifyReply) {
     const token = request.cookies.token;
     
     if (!token) {
