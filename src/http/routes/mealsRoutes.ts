@@ -1,7 +1,7 @@
 
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { checkUserIsAuthenticated } from './middlewares/check-is-authenticated';
+import { checkUserIsAuthenticated } from '../middlewares/check-is-authenticated';
 import { prismaClient } from '@/lib/prisma/prismaClient';
 
 export async function mealsRoutes(app: FastifyInstance) {

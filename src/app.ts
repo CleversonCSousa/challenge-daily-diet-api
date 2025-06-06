@@ -1,13 +1,4 @@
 import fastify from 'fastify';
-import { usersRoutes } from './http/usersRoutes';
-import fastifyCookie from '@fastify/cookie';
-import { mealsRoutes } from './http/mealsRoutes';
+import { appRoutes } from './http/routes/appRoutes';
 export const app = fastify();
-app.register(fastifyCookie);
-app.register(usersRoutes, {
-  prefix: '/users',
-});
-
-app.register(mealsRoutes, {
-    prefix: '/meals'
-});
+app.register(appRoutes);
