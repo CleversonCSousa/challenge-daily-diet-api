@@ -15,12 +15,13 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-  meals    Meal[]
-
+  id        String @id @default(uuid())
+  name      String
+  email     String @unique
+  password  String
+  meals     Meal[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@map("users")
 }
 
